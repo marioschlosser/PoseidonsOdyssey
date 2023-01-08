@@ -3,9 +3,10 @@ from random import random
 
 import pygame
 
-#create a level class with a backround, a list of obstacles, and a player
+#create a level class with a backround, a list of obstacles, and a player, and a name
 class Level:
-    def __init__(self, background, obstacles, player):
+    def __init__(self, name, background, obstacles, player):
+        self.name = name
         self.background = background
         self.obstacles = obstacles
         self.player = player
@@ -62,7 +63,7 @@ pygame.init()
 screen = pygame.display.set_mode((512, 512))
 
 # Set the title of the window
-pygame.display.set_caption('Jump and Dodge')
+pygame.display.set_caption('Poseidon''s Odyssey')
 
 # Create a clock to control the game's frame rate
 clock = pygame.time.Clock()
@@ -74,32 +75,32 @@ pet_img = pygame.image.load('doggie.png')
 
 #create the shark obstacle
 shark_img = pygame.image.load('shark.png')
-shark = Obstacle(512, 300, shark_img)
+shark = Obstacle(550 + random() * 200, random() * 200 + 100, shark_img)
 
 #create the stingray obstacle
 stingray_img = pygame.image.load('stingray.png')
-stingray = Obstacle(512, 300, stingray_img)
+stingray = Obstacle(550 + random() * 200, random() * 200 + 100, stingray_img)
 
 #create the pufferfish obstacle
 pufferfish_img = pygame.image.load('pufferfish.png')
-pufferfish = Obstacle(512, 300, pufferfish_img)
+pufferfish = Obstacle(550 + random() * 200, random() * 200 + 100, pufferfish_img)
 
 #create the bird obstacle
 bird_img = pygame.image.load('bird.png')
-bird = Obstacle(512, 300, bird_img)
+bird = Obstacle(550 + random() * 200, random() * 200 + 100, bird_img)
 
 #create the rock obstacle
 rock_img = pygame.image.load('rock.png')
-rock = Obstacle(512, 300, rock_img)
+rock = Obstacle(550 + random() * 200, random() * 200 + 100, rock_img)
 
 #create a level list
 level_list = []
 
 #create level 1 with the ocean background, the shark, stingray, and pufferfish obstacles, and the poseidon player
-level_list.append(Level(pygame.image.load('ocean.png'), [shark, stingray, pufferfish], Player(50, 300, pygame.image.load('poseidon.png'))))
+level_list.append(Level("Under The Ocean", pygame.image.load('ocean.png'), [shark, stingray, pufferfish], Player(50, 300, pygame.image.load('poseidon.png'))))
 
 #create level 2 with the sky background, the bird and rock obstacles, and the chariot player
-level_list.append(Level(pygame.image.load('sky.png'), [bird, rock], Player(50, 300, pygame.image.load('chariot.png'))))
+level_list.append(Level("In The Sky", pygame.image.load('sky.png'), [bird], Player(50, 300, pygame.image.load('chariot.png'))))
 
 #start the game on level 1
 level = level_list[0]
@@ -120,14 +121,21 @@ game_over = False
 #create a flag to indicate if the game is won
 game_won = False
 
-#show a dark screen with the title of the game"Poseidon's Odyssey"
+#show a dark screen with the title of the game "Poseidon's Odyssey"
 screen.fill((0, 0, 0))
 font = pygame.font.SysFont('Arial', 30)
 text = font.render('Poseidon\'s Odyssey', True, (255, 255, 255))
 screen.blit(text, (150, 200))
 pygame.display.flip()
-#wait for the user to press a key
-pygame.time.wait(2000)
+
+# Wait for the user to press a key
+while True:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            break
+    else:
+        continue
+    break
 
 #set the time_limit to 10 seconds
 time_limit = 10000
@@ -147,6 +155,22 @@ while not game_over:
     background_x = 0
     background_y = 0
 
+    #when the current level starts show the caption of the current level
+    screen.fill((0, 0, 0))
+    font = pygame.font.SysFont('Arial', 30)
+    text = font.render(level.name, True, (255, 255, 255))
+    screen.blit(text, (150, 200))
+    pygame.display.flip()
+
+    # Wait for the user to press a key
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                break
+        else:
+            continue
+        break
+
     # Run the game loop until the game is lost or won
     while not game_over and not game_won:
         # Handle events
@@ -158,15 +182,15 @@ while not game_over:
         # Update the player position
         player.y += player_dy
         player_dy += 0.5
-        if player.y > 150:
-            player.y = 150
+        if player.y > 350:
+            player.y = 350
             player_dy = 0
         # Update the obstacle position
         for obstacle in obstacles:
             obstacle.move()
             if obstacle.off_screen():
                 #once the obstacle is off the screen, move it to a new random position
-                obstacle.x = 550
+                obstacle.x = 550 + random() * 200
                 obstacle.y = random() * 200 + 100
 
         #Update the pet's position to follow the player
